@@ -61,23 +61,23 @@ This plan derives directly from [docs/SPEC.md](file:///Users/johntan/Projects/ve
 - **Files to create**:
   - `modules/dataproc/variables.tf`: `project_id`, `region`, `subnet_name`, `dataproc_sa_email`, `staging_bucket_name`, `master_machine_type`.
   - `modules/dataproc/main.tf`:
-    - `google_dataproc_cluster`: Single-node cluster (`num_instances = 1` master, `0` workers) in `asia-southeast1`.
-    - Internal IP only (`internal_ip_only = true`), subnet reference.
-    - Component Gateway enabled (`enable_http_port_access = true`).
+    - `google_dataproc_cluster`: Single-node cluster (`num_instances = 1` master in `master_config`, `worker_config` omitted entirely per GCP API requirements).
+    - Subnet attachment via `cluster_config.gce_cluster_config.subnetwork` with `internal_ip_only = true`.
+    - Component Gateway enabled (`endpoint_config.enable_http_port_access = true`).
     - Optional component `["JUPYTER"]`.
-    - Cluster property `dataproc:dataproc.allow.zero.workers = "true"`.
-    - Attached service account: `var.dataproc_sa_email`.
-  - `modules/dataproc/outputs.tf`: Export `cluster_name`, `cluster_id`, `master_instance_name`.
+    - Override property: `"dataproc:dataproc.allow.zero.workers" = "true"`.
+    - Attached service account: `cluster_config.gce_cluster_config.service_account = var.dataproc_sa_email`.
+  - `modules/dataproc/outputs.tf`: Export `cluster_name`, `cluster_id`.
 - **Verification**: Schema validation via `terraform validate`.
 
 ---
 
 ### Micro-Task 6: Cloud Composer 3 Module (`modules/composer`)
 - **Files to create**:
-  - `modules/composer/variables.tf`: `project_id`, `region`, `subnet_id`, `composer_sa_email`, `workbench_sa_email`.
+  - `modules/composer/variables.tf`: `project_id`, `region`, `network_id`, `subnet_id`, `composer_sa_email`, `workbench_sa_email`.
   - `modules/composer/main.tf`:
-    - `google_composer_environment`: Composer 3 (`image_version = "composer-3-airflow-2.*"`), `ENVIRONMENT_SIZE_SMALL` in `asia-southeast1`.
-    - Node config with `var.composer_sa_email` and private subnet attachment.
+    - `google_composer_environment`: Composer 3 (`image_version = "composer-3-airflow-2.9.3-build.20"`) in `asia-southeast1`.
+    - Node config specifying `network`, `subnetwork`, and `service_account = var.composer_sa_email`.
     - `google_storage_bucket_iam_member.workbench_composer_dags`: Grant `roles/storage.objectUser` on Composer's GCS DAGs bucket to `var.workbench_sa_email`.
   - `modules/composer/outputs.tf`: Export `composer_env_name`, `airflow_uri`, `gcs_bucket_name`.
 - **Verification**: Schema validation via `terraform validate`.
@@ -86,11 +86,16 @@ This plan derives directly from [docs/SPEC.md](file:///Users/johntan/Projects/ve
 
 ### Micro-Task 7: Vertex AI Workbench Module (`modules/workbench`)
 - **Files to create**:
-  - `modules/workbench/variables.tf`: `project_id`, `zone`, `subnet_id`, `workbench_sa_email`, `workbench_user_email`, `machine_type`.
+  - `modules/workbench/variables.tf`: `project_id`, `zone`, `network_id`, `subnet_id`, `workbench_sa_email`, `workbench_user_email`, `machine_type`.
   - `modules/workbench/main.tf`:
     - `google_workbench_instance`: Instance in `asia-southeast1-a` (or user zone).
-    - `disable_public_ip = true`, private subnet attachment.
-    - `gce_setup.service_accounts`: Configured with `var.workbench_sa_email`.
+    - `gce_setup`:
+      - `machine_type = var.machine_type`
+      - `disable_public_ip = true`
+      - `network_interfaces { network = var.network_id, subnet = var.subnet_id }`
+      - `service_accounts { email = var.workbench_sa_email }`
+      - `vm_image { project = "cloud-notebooks-managed", family = "workbench-instances" }`
+      - `boot_disk { disk_size_gb = 100, disk_type = "PD_BALANCED" }`
     - `instance_owners = [var.workbench_user_email]`.
     - Network tags `["vertex-workbench", "private-workload"]`.
   - `modules/workbench/outputs.tf`: Export `instance_id`, `instance_name`, `proxy_uri`.

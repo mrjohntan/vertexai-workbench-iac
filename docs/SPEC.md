@@ -103,34 +103,36 @@ The environment provisions and integrates:
 - **Resource**: `google_workbench_instance` in `asia-southeast1-a` (or user-specified zone).
 - **Compute Specs**: Machine type `e2-standard-4` (configurable), 100 GB balanced boot disk.
 - **Network Configuration**:
-  - Attached to the private subnet.
-  - `disable_public_ip = true`: No public IP assigned.
+  - Attached to the private subnet via `gce_setup.network_interfaces`.
+  - `gce_setup.disable_public_ip = true`: No public IP assigned.
 - **Security & Access**:
   - `gce_setup.service_accounts`: Configured with `sa-workbench.email`.
+  - `gce_setup.vm_image`: `project = "cloud-notebooks-managed"`, `family = "workbench-instances"`.
   - `instance_owners = [var.workbench_user_email]`: Allows the user to access the web UI via Google Cloud Console reverse proxy.
   - Network tags: `["vertex-workbench", "private-workload"]`.
 
 ### 3.5 Dataproc Cluster (`modules/dataproc`)
 - **Resource**: `google_dataproc_cluster` in `asia-southeast1`.
-- **Sizing**: Single-node cluster (`cluster_config.master_config.num_instances = 1`, `cluster_config.worker_config.num_instances = 0`).
-  - Master machine type: `n2-standard-4` (configurable).
-  - Software config property: `dataproc:dataproc.allow.zero.workers = "true"`.
+- **Sizing & Single-Node Topology**:
+  - `cluster_config.master_config`: 1 master instance (`n2-standard-4` or `e2-standard-4`).
+  - `cluster_config.worker_config`: Omitted entirely (Google Cloud API requirement for single-node Dataproc).
+  - Software config property in `cluster_config.software_config.override_properties`:
+    - `"dataproc:dataproc.allow.zero.workers" = "true"`.
 - **Network Configuration**:
-  - Attached to the private subnet.
+  - Attached to the private subnet via `cluster_config.gce_cluster_config.subnetwork`.
   - `cluster_config.gce_cluster_config.internal_ip_only = true`.
+  - `cluster_config.gce_cluster_config.service_account = sa-dataproc.email`.
   - Network tags: `["dataproc-node", "private-workload"]`.
 - **Component Gateway & Kernels**:
   - `cluster_config.endpoint_config.enable_http_port_access = true`.
   - `cluster_config.software_config.optional_components = ["JUPYTER"]`.
-  - Dataproc service account: `sa-dataproc.email`.
 
 ### 3.6 Cloud Composer 3 (`modules/composer`)
 - **Resource**: `google_composer_environment` in `asia-southeast1`.
-- **Version**: Cloud Composer 3 (`image_version = "composer-3-airflow-2.*"`).
-- **Environment Size**: `ENVIRONMENT_SIZE_SMALL`.
+- **Version**: Cloud Composer 3 (`image_version = "composer-3-airflow-2.9.3-build.20"` or compatible Composer 3 release).
 - **Node Config**:
-  - Service account: `sa-composer.email`.
-  - Attached to the private VPC subnet.
+  - `service_account = sa-composer.email`.
+  - Attached to the private VPC subnet via `network = ...` and `subnetwork = ...`.
 - **Cross-Service Wiring for Notebook Scheduling**:
   - The Composer DAGs bucket (`gs://<composer-env-bucket>/dags`) IAM binding:
     - `roles/storage.objectUser` granted to `sa-workbench`.
