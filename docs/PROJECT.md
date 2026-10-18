@@ -10,7 +10,7 @@
 ## Active Task Roadmap
 
 - [x] 1. Root configuration: Scaffold `versions.tf`, `variables.tf`, and enable project APIs in `main.tf`.
-- [ ] 2. Networking module: Implement `modules/networking` (VPC, Subnet with Private Google Access, Cloud Router, Cloud NAT, Firewall rules).
+- [x] 2. Networking module: Implement `modules/networking` (VPC, Subnet with Private Google Access, Cloud Router, Cloud NAT, Firewall rules).
 - [ ] 3. IAM module: Implement `modules/iam` (Service Accounts, least-privilege roles, user impersonation).
 - [ ] 4. Storage module: Implement `modules/storage` (Test data bucket, Dataproc staging bucket, IAM grants).
 - [ ] 5. Dataproc module: Implement `modules/dataproc` (Single-node cluster, Component Gateway, Jupyter component).
