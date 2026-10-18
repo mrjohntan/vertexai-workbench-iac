@@ -17,7 +17,7 @@
 - [x] 6. Composer module: Implement `modules/composer` (Composer 3 Small environment, DAG bucket permissions).
 - [x] 7. Workbench module: Implement `modules/workbench` (Private `google_workbench_instance`, instance owner, SA attachment).
 - [x] 8. Root orchestration & outputs: Wire modules in `main.tf`, declare outputs in `outputs.tf`, create `terraform.tfvars.example`.
-- [ ] 9. Documentation: Create operational runbook in `docs/RUNBOOK.md` and user-facing `README.md`.
+- [x] 9. Documentation: Create operational runbook in `docs/RUNBOOK.md` and user-facing `README.md`.
 - [ ] 10. Closeout verification: Linting, formatting, validation, and review pass.
 
 ---
