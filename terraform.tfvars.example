@@ -1,0 +1,18 @@
+# Target Google Cloud Project ID
+project_id = "your-gcp-project-id"
+
+# Primary Region and Zone (Singapore)
+region = "asia-southeast1"
+zone   = "asia-southeast1-a"
+
+# Network Configuration
+network_name = "test-vertex-vpc"
+subnet_cidr  = "10.10.0.0/24"
+
+# Identity of the User who will access Workbench and impersonate the Workbench SA
+# Can be user:email@example.com or email@example.com
+workbench_user_email = "user:developer@example.com"
+
+# Machine Sizing
+workbench_machine_type       = "e2-standard-4"
+dataproc_master_machine_type = "n2-standard-4"
