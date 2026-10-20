@@ -24,7 +24,18 @@ class TestDataprocModule(unittest.TestCase):
         self.assertIn("dataproc:dataproc.allow.zero.workers", content)
         self.assertIn("enable_http_port_access = true", content)
         self.assertIn('"JUPYTER"', content)
+        self.assertIn("staging_bucket = var.staging_bucket_name", content)
+        self.assertIn("temp_bucket    = var.temp_bucket_name", content)
         self.assertIn("internal_ip_only = true", content)
+        self.assertIn("lifecycle_config", content)
+        self.assertIn("idle_stop_ttl", content)
+
+    def test_dataproc_variables(self):
+        path = os.path.join(self.mod_dir, "variables.tf")
+        with open(path) as f:
+            content = f.read()
+        self.assertIn('variable "temp_bucket_name"', content)
+        self.assertIn('variable "staging_bucket_name"', content)
 
     def test_dataproc_outputs(self):
         path = os.path.join(self.mod_dir, "outputs.tf")

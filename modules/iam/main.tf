@@ -20,7 +20,7 @@ resource "google_service_account" "workbench" {
 }
 
 resource "google_project_iam_member" "workbench_roles" {
-  for_each = toset(locals.workbench_roles)
+  for_each = toset(local.workbench_roles)
 
   project = var.project_id
   role    = each.key
@@ -31,13 +31,13 @@ resource "google_project_iam_member" "workbench_roles" {
 resource "google_service_account_iam_member" "user_impersonate_user" {
   service_account_id = google_service_account.workbench.name
   role               = "roles/iam.serviceAccountUser"
-  member             = locals.user_member
+  member             = local.user_member
 }
 
 resource "google_service_account_iam_member" "user_impersonate_token" {
   service_account_id = google_service_account.workbench.name
   role               = "roles/iam.serviceAccountTokenCreator"
-  member             = locals.user_member
+  member             = local.user_member
 }
 
 # 2. Dataproc Cluster Service Account

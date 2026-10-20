@@ -38,5 +38,5 @@ variable "environment_name" {
 variable "image_version" {
   type        = string
   description = "The Cloud Composer 3 image version."
-  default     = "composer-3-airflow-2.9.3-build.20"
+  default     = "composer-3-airflow-3.3.1"
 }

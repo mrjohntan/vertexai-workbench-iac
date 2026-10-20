@@ -12,3 +12,8 @@ output "gcs_bucket_name" {
   value       = google_composer_environment.composer_env.storage_config[0].bucket
   description = "The Cloud Storage bucket name associated with the Cloud Composer environment."
 }
+
+output "dags_gcs_prefix" {
+  value       = google_composer_environment.composer_env.config[0].dag_gcs_prefix
+  description = "The Cloud Storage URI where DAGs are stored (gs://<bucket>/dags)."
+}

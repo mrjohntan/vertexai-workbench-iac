@@ -5,6 +5,11 @@ resource "google_dataproc_cluster" "cluster" {
 
   cluster_config {
     staging_bucket = var.staging_bucket_name
+    temp_bucket    = var.temp_bucket_name
+
+    lifecycle_config {
+      idle_stop_ttl = var.idle_stop_ttl
+    }
 
     master_config {
       num_instances = 1

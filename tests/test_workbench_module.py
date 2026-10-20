@@ -25,6 +25,7 @@ class TestWorkbenchModule(unittest.TestCase):
         self.assertIn("vm_image", content)
         self.assertIn("workbench-instances", content)
         self.assertIn("instance_owners", content)
+        self.assertIn("idle-timeout-seconds", content)
 
     def test_workbench_outputs(self):
         path = os.path.join(self.mod_dir, "outputs.tf")

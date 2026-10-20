@@ -24,7 +24,7 @@ Automated Terraform codebase to bootstrap a secure, private-networked data scien
 ├── modules/
 │   ├── networking/            # VPC, private subnet, Cloud Router, Cloud NAT, firewall rules
 │   ├── iam/                   # Service accounts, role grants, user impersonation bindings
-│   ├── storage/               # Test data bucket & Dataproc staging bucket
+│   ├── storage/               # Test data bucket, Dataproc staging & temp buckets
 │   ├── dataproc/              # Single-node Dataproc cluster with Component Gateway
 │   ├── composer/              # Cloud Composer 3 environment & DAG bucket permissions
 │   └── workbench/             # Private Vertex AI Workbench instance & instance owner
@@ -57,6 +57,11 @@ project_id           = "your-gcp-project-id"
 region               = "asia-southeast1"
 zone                 = "asia-southeast1-a"
 workbench_user_email = "user:developer@example.com"
+
+# Optional settings
+workbench_idle_timeout_seconds = 1800   # 30-min idle shutdown (default: 1800)
+dataproc_idle_stop_ttl         = "1800s" # 30-min Dataproc scheduled stop (default: "1800s")
+enable_composer                = false  # Set to true when you want Cloud Composer 3
 ```
 
 ### 3. Deploy

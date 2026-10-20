@@ -96,6 +96,7 @@ This runbook guides engineers and maintainers through deploying, verifying, trou
 | Cannot open JupyterLab from Console | User not set in `instance_owners` or missing `roles/notebooks.admin` / `viewer` | Ensure `workbench_user_email` matches user Google Cloud identity. Check IAM bindings on project. |
 | `pip install` fails with network timeout inside Workbench | Cloud NAT not routing or route missing | Verify `google_compute_router_nat.nat` is healthy. Verify route `0.0.0.0/0` -> `default-internet-gateway` exists in VPC. |
 | Dataproc cluster kernel does not appear in Workbench | Component Gateway disabled or internal firewall blocking ports | Confirm `endpoint_config.enable_http_port_access = true`. Check firewall rule `allow-internal` covers `10.10.0.0/24`. |
+| Dataproc creation fails with missing permissions on temp_bucket | Custom VM service account lacks `storage.buckets.get` or dedicated `temp_bucket` omitted | Ensure `temp_bucket = var.temp_bucket_name` is configured in Dataproc cluster and `roles/storage.admin` is granted on both staging and temp buckets. |
 | Composer DAG upload returns `Permission Denied` from Workbench | Missing `roles/storage.objectUser` on Composer DAGs bucket | Verify `google_storage_bucket_iam_member.workbench_dag_access` exists in state. |
 
 ---

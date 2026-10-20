@@ -24,6 +24,11 @@ variable "staging_bucket_name" {
   description = "The GCS bucket name for Dataproc staging."
 }
 
+variable "temp_bucket_name" {
+  type        = string
+  description = "The GCS bucket name for Dataproc temp files."
+}
+
 variable "master_machine_type" {
   type        = string
   description = "The Compute Engine machine type for the Dataproc master node."
@@ -34,4 +39,10 @@ variable "cluster_name" {
   type        = string
   description = "The name of the Dataproc cluster."
   default     = "test-dataproc-kernel"
+}
+
+variable "idle_stop_ttl" {
+  type        = string
+  description = "The duration to keep the Dataproc cluster running while idle before automatically stopping it (must end with 's', e.g. '1800s' for 30 minutes). Valid range: [600s, 1209600s]."
+  default     = "1800s"
 }

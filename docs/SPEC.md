@@ -96,12 +96,14 @@ The environment provisions and integrates:
 - **Data Storage Bucket**: `google_storage_bucket` in `asia-southeast1` (e.g. `var.project_id-test-data`).
   - Uniform bucket-level access enabled.
   - Versioning enabled (optional, default true).
-  - IAM Binding: `roles/storage.objectUser` granted to `sa-workbench` (read, write, delete data objects).
-- **Dataproc Staging Bucket**: Dedicated bucket in `asia-southeast1` for Dataproc cluster temporary files and job artifacts, with `roles/storage.objectAdmin` granted to `sa-dataproc`.
+  - IAM Bindings: `roles/storage.admin` granted to both `sa-workbench` and `sa-dataproc` (allows bucket metadata access, object read/write/delete).
+- **Dataproc Staging Bucket**: Dedicated bucket in `asia-southeast1` (`${var.project_id}-dataproc-staging-${random_id.bucket_suffix.hex}`) for Dataproc cluster job dependencies, driver logs, and JAR files, with `roles/storage.admin` granted to `sa-dataproc`.
+- **Dataproc Temp Bucket**: Dedicated bucket in `asia-southeast1` (`${var.project_id}-dataproc-temp-${random_id.bucket_suffix.hex}`) for transient Spark/YARN data and ephemeral scratch space, with `roles/storage.admin` granted to `sa-dataproc`. Prevents Dataproc cluster creation failures from unpermitted project-default temp buckets.
 
 ### 3.4 Vertex AI Workbench (`modules/workbench`)
 - **Resource**: `google_workbench_instance` in `asia-southeast1-a` (or user-specified zone).
-- **Compute Specs**: Machine type `e2-standard-4` (configurable), 100 GB balanced boot disk.
+- **Compute Specs**: Machine type `e2-standard-4` (configurable), 150 GB balanced boot disk.
+- **Idle Shutdown**: Configured via `gce_setup.metadata["idle-timeout-seconds"] = "1800"` (30 minutes of inactivity before automatic shutdown).
 - **Network Configuration**:
   - Attached to the private subnet via `gce_setup.network_interfaces`.
   - `gce_setup.disable_public_ip = true`: No public IP assigned.
@@ -113,6 +115,9 @@ The environment provisions and integrates:
 
 ### 3.5 Dataproc Cluster (`modules/dataproc`)
 - **Resource**: `google_dataproc_cluster` in `asia-southeast1`.
+- **Storage Configuration**:
+  - `cluster_config.staging_bucket`: Set to dedicated staging bucket `var.staging_bucket_name`.
+  - `cluster_config.temp_bucket`: Set to dedicated temp bucket `var.temp_bucket_name`.
 - **Sizing & Single-Node Topology**:
   - `cluster_config.master_config`: 1 master instance (`n2-standard-4` or `e2-standard-4`).
   - `cluster_config.worker_config`: Omitted entirely (Google Cloud API requirement for single-node Dataproc).
@@ -126,10 +131,13 @@ The environment provisions and integrates:
 - **Component Gateway & Kernels**:
   - `cluster_config.endpoint_config.enable_http_port_access = true`.
   - `cluster_config.software_config.optional_components = ["JUPYTER"]`.
+- **Scheduled Stop (Auto-Stop)**:
+  - `cluster_config.lifecycle_config.idle_stop_ttl = var.idle_stop_ttl` (default: `"1800s"`). Automatically stops the cluster VMs after 30 minutes of idle time without active jobs, preserving persistent disks and cluster metadata.
 
 ### 3.6 Cloud Composer 3 (`modules/composer`)
+- **Optional Deployment**: Governed by `var.enable_composer` (default: `false`). Allows deferring Composer provisioning until DAG orchestration is needed.
 - **Resource**: `google_composer_environment` in `asia-southeast1`.
-- **Version**: Cloud Composer 3 (`image_version = "composer-3-airflow-2.9.3-build.20"` or compatible Composer 3 release).
+- **Version**: Cloud Composer 3 (`image_version = "composer-3-airflow-3.3.1"` or compatible Composer 3 release).
 - **Node Config**:
   - `service_account = sa-composer.email`.
   - Attached to the private VPC subnet via `network = ...` and `subnetwork = ...`.

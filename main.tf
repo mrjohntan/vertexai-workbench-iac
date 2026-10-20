@@ -12,7 +12,7 @@ locals {
 }
 
 resource "google_project_service" "required_apis" {
-  for_each = toset(locals.required_services)
+  for_each = toset(local.required_services)
 
   project            = var.project_id
   service            = each.key
@@ -62,13 +62,16 @@ module "dataproc" {
   subnet_id           = module.networking.subnet_id
   dataproc_sa_email   = module.iam.dataproc_sa_email
   staging_bucket_name = module.storage.dataproc_staging_bucket_name
+  temp_bucket_name    = module.storage.dataproc_temp_bucket_name
   master_machine_type = var.dataproc_master_machine_type
+  idle_stop_ttl       = var.dataproc_idle_stop_ttl
 
   depends_on = [google_project_service.required_apis]
 }
 
 # 5. Cloud Composer 3 Module (Composer 3 Small, Private Subnet, DAG Access)
 module "composer" {
+  count  = var.enable_composer ? 1 : 0
   source = "./modules/composer"
 
   project_id         = var.project_id
@@ -92,6 +95,7 @@ module "workbench" {
   workbench_sa_email   = module.iam.workbench_sa_email
   workbench_user_email = var.workbench_user_email
   machine_type         = var.workbench_machine_type
+  idle_timeout_seconds = var.workbench_idle_timeout_seconds
 
   depends_on = [google_project_service.required_apis]
 }

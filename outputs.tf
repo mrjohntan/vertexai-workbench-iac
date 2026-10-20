@@ -19,13 +19,23 @@ output "dataproc_cluster_name" {
 }
 
 output "composer_env_name" {
-  value       = module.composer.composer_env_name
-  description = "The name of the Cloud Composer 3 environment."
+  value       = try(module.composer[0].composer_env_name, null)
+  description = "The name of the Cloud Composer 3 environment (null if enable_composer is false)."
 }
 
 output "composer_airflow_uri" {
-  value       = module.composer.airflow_uri
-  description = "The Web UI URI for Cloud Composer Apache Airflow."
+  value       = try(module.composer[0].airflow_uri, null)
+  description = "The Web UI URI for Cloud Composer Apache Airflow (null if enable_composer is false)."
+}
+
+output "composer_dag_bucket" {
+  value       = try(module.composer[0].gcs_bucket_name, null)
+  description = "The Cloud Storage bucket automatically created by Cloud Composer for DAGs and plugins (null if enable_composer is false)."
+}
+
+output "composer_dags_path" {
+  value       = try(module.composer[0].dags_gcs_prefix, null)
+  description = "The full Cloud Storage path (gs://<bucket>/dags) where Airflow DAG files should be uploaded (null if enable_composer is false)."
 }
 
 output "data_bucket_name" {

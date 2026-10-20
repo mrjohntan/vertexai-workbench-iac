@@ -43,3 +43,21 @@ variable "dataproc_master_machine_type" {
   description = "The machine type for the single-node Dataproc master instance."
   default     = "n2-standard-4"
 }
+
+variable "dataproc_idle_stop_ttl" {
+  type        = string
+  description = "The duration of inactivity before the Dataproc cluster automatically stops (must end with 's', e.g. '1800s' for 30 minutes). Valid range: [600s, 1209600s]."
+  default     = "1800s"
+}
+
+variable "workbench_idle_timeout_seconds" {
+  type        = number
+  description = "Idle timeout in seconds before the Vertex AI Workbench instance automatically shuts down (default 1800 = 30 minutes)."
+  default     = 1800
+}
+
+variable "enable_composer" {
+  type        = bool
+  description = "Whether to provision the Cloud Composer 3 environment. Set to false to defer deployment."
+  default     = false
+}

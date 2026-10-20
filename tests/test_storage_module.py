@@ -19,8 +19,9 @@ class TestStorageModule(unittest.TestCase):
 
         self.assertIn("google_storage_bucket", content)
         self.assertIn("uniform_bucket_level_access = true", content)
-        self.assertIn("roles/storage.objectUser", content)
-        self.assertIn("roles/storage.objectAdmin", content)
+        self.assertIn("dataproc_staging", content)
+        self.assertIn("dataproc_temp", content)
+        self.assertIn("roles/storage.admin", content)
 
     def test_storage_outputs(self):
         path = os.path.join(self.mod_dir, "outputs.tf")
@@ -29,7 +30,7 @@ class TestStorageModule(unittest.TestCase):
         with open(path) as f:
             content = f.read()
 
-        for out in ["data_bucket_name", "data_bucket_url", "dataproc_staging_bucket_name"]:
+        for out in ["data_bucket_name", "data_bucket_url", "dataproc_staging_bucket_name", "dataproc_temp_bucket_name"]:
             self.assertIn(f'output "{out}"', content)
 
 if __name__ == "__main__":

@@ -44,5 +44,11 @@ variable "machine_type" {
 variable "boot_disk_size_gb" {
   type        = number
   description = "Boot disk size in GB."
-  default     = 100
+  default     = 150
+}
+
+variable "idle_timeout_seconds" {
+  type        = number
+  description = "Idle timeout in seconds before the workbench instance automatically shuts down (default 1800 = 30 minutes)."
+  default     = 1800
 }

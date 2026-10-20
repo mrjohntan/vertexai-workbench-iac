@@ -12,3 +12,8 @@ output "dataproc_staging_bucket_name" {
   value       = google_storage_bucket.dataproc_staging.name
   description = "The name of the Dataproc staging GCS bucket."
 }
+
+output "dataproc_temp_bucket_name" {
+  value       = google_storage_bucket.dataproc_temp.name
+  description = "The name of the Dataproc temp GCS bucket."
+}
