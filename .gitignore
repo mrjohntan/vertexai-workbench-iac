@@ -1,0 +1,61 @@
+# ==============================================================================
+# Terraform Best Practices .gitignore
+# ==============================================================================
+
+# Local .terraform directories containing downloaded provider plugins and modules
+**/.terraform/*
+
+# Terraform state files (contain state and potentially sensitive infrastructure attributes)
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Exclude variable definitions files containing secrets or project-specific configs
+*.tfvars
+*.tfvars.json
+
+# Explicitly retain example/template variable definitions
+!terraform.tfvars.example
+!*.tfvars.example
+
+# Ignore local override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform plan output files
+tfplan
+*tfplan*
+*.tfplan
+
+# CLI configuration files
+.terraformrc
+terraform.rc
+
+# ==============================================================================
+# Python Test & Environment Artifacts
+# ==============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+ENV/
+
+# ==============================================================================
+# OS & Editor Artifacts
+# ==============================================================================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
