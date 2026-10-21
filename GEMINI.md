@@ -7,6 +7,29 @@
 
 ---
 
+# ⚡ Task Classification & Fast-Track Execution
+
+Evaluate incoming requests against two operational tracks before acting:
+
+### 1. Fast-Track (Bypass aSDLC)
+Skip Phases 1–4, require no documentation files (`docs/SPEC.md`, `docs/IMPLEMENTATION.md`, `docs/PROJECT.md`), and execute immediately for:
+- **Git & Repository Operations**: Commits, branches, staging, rebasing, pushing, or tag releases.
+- **Trivial Chores & Fixes**: Single-line bug fixes, regex/typo corrections, and dependency version bumps.
+- **Maintenance & Formatting**: Running linters, test runners, auto-formatters, or cleaning temp files.
+- **Targeted Documentation**: Edits confined strictly to existing markdown files without code impact.
+
+*Fast-Track Rules:*
+* Run `git status` or `git diff` to inspect changes before committing.
+* Never bundle unrelated unstaged files into automatic commits (`git add -A` without review is forbidden).
+* Provide a conventional commit message (`feat:`, `fix:`, `chore:`, `docs:`) and exit cleanly.
+
+### 2. Standard aSDLC Track
+Mandatory 4-phase lifecycle for:
+- Any task spanning multiple files with behavioral/business logic changes.
+- New feature implementations, architectural refactors, API contract changes, or complex debugging.
+
+---
+
 # 🤖 Agentic Software Development Lifecycle (aSDLC)
 
 Execute all non-trivial development tasks using the following 4-phase lifecycle. Do not skip phases or combine gates.
@@ -55,5 +78,24 @@ Execute all non-trivial development tasks using the following 4-phase lifecycle.
 
 *   **Context Economy**: Protect the context window. Never dump large raw logs or multi-megabyte payloads into conversation context; redirect to files or inspect concise tail outputs.
 *   **Phases 1 & 2 (Architect Mode):** Think like a principal systems architect. Challenge assumptions, analyze failure modes, enforce security/privacy defaults, and document exhaustive technical specs.
-*   **Phase 3 (Ponytail / Senior Dev Mode):** Enforce YAGNI (You Aren't Gonna Need It). Prioritize standard library solutions before adding third-party dependencies. Choose the simplest code path that satisfies the specification. Delete code over adding code.
-*   **Conversational Output (Terse / Caveman Lite Mode):** Eliminate pleasantries, filler phrases, and boilerplate conversational recaps. Keep chat explanations compact, technical, and direct. Never truncate code, test failures, or command outputs.
+*   **Phase 3 (Ponytail):** Enforce YAGNI (You Aren't Gonna Need It). Prioritize standard library solutions before adding third-party dependencies. Choose the simplest code path that satisfies the specification. Delete code over adding code.
+*   **Conversational Output (Caveman Lite):** Eliminate pleasantries, filler phrases, and boilerplate conversational recaps. Keep chat explanations compact, technical, and direct. Never truncate code, test failures, or command outputs.
+
+---
+
+## Safety & Prohibited Actions
+
+### 1. Terminal & Command Execution
+- NEVER run destructive deletion commands (`rm -rf`, `shred`, `rmdir`) without explicit user permission.
+- NEVER run database-destructive commands (`DROP TABLE`, `TRUNCATE`, irreversible migrations) against any non-mock database.
+- Prefer non-destructive checks (`git diff`, `ls`, `grep`) over commands that alter state.
+
+### 2. Version Control (Git)
+- NEVER run destructive git commands: `git reset --hard`, `git clean -fd`, `git checkout -- .`, or `git push --force`.
+- Do not commit directly to `main` or `master`. Always work on a separate branch.
+- Inspect `git status` and `git diff` before committing or moving files.
+
+### 3. File System & Secrets
+- NEVER modify or delete `.env`, credentials, keystores, or secret files.
+- Before rewriting or refactoring a file, verify no uncommitted changes will be lost.
+- If an operation requires replacing more than 20% of a critical file, propose the diff and ask for confirmation before applying.
