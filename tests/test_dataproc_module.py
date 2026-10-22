@@ -29,6 +29,7 @@ class TestDataprocModule(unittest.TestCase):
         self.assertIn("internal_ip_only = true", content)
         self.assertIn("lifecycle_config", content)
         self.assertIn("idle_stop_ttl", content)
+        self.assertIn("image_version = var.image_version", content)
 
     def test_dataproc_variables(self):
         path = os.path.join(self.mod_dir, "variables.tf")
@@ -36,6 +37,8 @@ class TestDataprocModule(unittest.TestCase):
             content = f.read()
         self.assertIn('variable "temp_bucket_name"', content)
         self.assertIn('variable "staging_bucket_name"', content)
+        self.assertIn('variable "image_version"', content)
+        self.assertIn('"2.3-debian12"', content)
 
     def test_dataproc_outputs(self):
         path = os.path.join(self.mod_dir, "outputs.tf")

@@ -106,7 +106,12 @@ The environment provisions and integrates:
 - **Idle Shutdown**: Configured via `gce_setup.metadata["idle-timeout-seconds"] = "1800"` (30 minutes of inactivity before automatic shutdown).
 - **Network Configuration**:
   - Attached to the private subnet via `gce_setup.network_interfaces`.
-  - `gce_setup.disable_public_ip = true`: No public IP assigned.
+  - `gce_setup.disable_public_ip = true`: Strictly no external/public IP allocated to the instance.
+  - Egress routing: All outbound requests (PyPI, Conda, package repositories) traverse Cloud NAT on the subnet.
+- **Apache Spark Kernels & Dataproc Integration**:
+  - `gce_setup.metadata["disable-mixer"] = "false"`: Explicitly enables the Apache Spark / Dataproc extension and JupyterLab kernels.
+  - `gce_setup.metadata["dataproc-cluster-name"] = var.dataproc_cluster_name`: Links JupyterLab directly to the provisioned Dataproc cluster.
+  - `gce_setup.metadata["dataproc-region"] = var.dataproc_region`: Sets the cluster region for interactive session management.
 - **Security & Access**:
   - `gce_setup.service_accounts`: Configured with `sa-workbench.email`.
   - `gce_setup.vm_image`: `project = "cloud-notebooks-managed"`, `family = "workbench-instances"`.
@@ -115,6 +120,9 @@ The environment provisions and integrates:
 
 ### 3.5 Dataproc Cluster (`modules/dataproc`)
 - **Resource**: `google_dataproc_cluster` in `asia-southeast1`.
+- **Image Version & Spark 3 Support**:
+  - Configured with `software_config.image_version = "2.3-debian12"` (latest Dataproc 2.3 release line providing Apache Spark 3.5.x runtime with Debian 12; Dataproc 3.0+ transitions to Spark 4.x).
+  - Parameterized via `var.image_version` with default `"2.3-debian12"`.
 - **Storage Configuration**:
   - `cluster_config.staging_bucket`: Set to dedicated staging bucket `var.staging_bucket_name`.
   - `cluster_config.temp_bucket`: Set to dedicated temp bucket `var.temp_bucket_name`.
