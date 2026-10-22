@@ -14,8 +14,10 @@ subnet_cidr  = "10.10.0.0/24"
 workbench_user_email = "user:developer@example.com"
 
 # Machine Sizing
-workbench_machine_type       = "e2-standard-4"
-dataproc_master_machine_type = "n2-standard-4"
+workbench_machine_type        = "e2-standard-4"
+dataproc_master_machine_type  = "e2-standard-2"
+dataproc_worker_machine_type  = "e2-standard-2"
+dataproc_worker_num_instances = 2
 
 # Vertex AI Workbench Idle Timeout (seconds, default 1800 = 30 minutes)
 workbench_idle_timeout_seconds = 1800
