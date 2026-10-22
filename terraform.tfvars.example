@@ -25,3 +25,7 @@ dataproc_idle_stop_ttl = "1800s"
 
 # Optional Cloud Composer 3 Deployment (false = defer, true = deploy now)
 enable_composer = false
+
+# Dataproc Image Version (Spark 3 support via Dataproc 2.3)
+dataproc_image_version = "2.3-debian12"
+

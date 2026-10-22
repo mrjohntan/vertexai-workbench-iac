@@ -13,6 +13,9 @@ class TestRootOrchestration(unittest.TestCase):
         for mod in ["networking", "iam", "storage", "dataproc", "composer", "workbench"]:
             self.assertIn(f'module "{mod}"', content)
         self.assertIn("temp_bucket_name    = module.storage.dataproc_temp_bucket_name", content)
+        self.assertIn("image_version       = var.dataproc_image_version", content)
+        self.assertIn("dataproc_cluster_name = module.dataproc.cluster_name", content)
+        self.assertIn("dataproc_region       = var.region", content)
 
     def test_outputs_tf_declarations(self):
         path = os.path.join(self.root_dir, "outputs.tf")

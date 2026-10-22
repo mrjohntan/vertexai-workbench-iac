@@ -61,3 +61,10 @@ variable "enable_composer" {
   description = "Whether to provision the Cloud Composer 3 environment. Set to false to defer deployment."
   default     = false
 }
+
+variable "dataproc_image_version" {
+  type        = string
+  description = "The Dataproc image version supporting Spark 3 (default: 2.3-debian12, the latest Dataproc image line with Spark 3.5.x)."
+  default     = "2.3-debian12"
+}
+
