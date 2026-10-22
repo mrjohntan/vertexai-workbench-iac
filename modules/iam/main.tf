@@ -10,6 +10,11 @@ locals {
     "roles/dataproc.editor",
     "roles/composer.user"
   ]
+
+  composer_roles = [
+    "roles/composer.worker",
+    "roles/dataproc.editor"
+  ]
 }
 
 # 1. Vertex AI Workbench Service Account
@@ -67,8 +72,18 @@ resource "google_service_account" "composer" {
   project      = var.project_id
 }
 
-resource "google_project_iam_member" "composer_worker" {
+resource "google_project_iam_member" "composer_roles" {
+  for_each = toset(local.composer_roles)
+
   project = var.project_id
-  role    = "roles/composer.worker"
+  role    = each.key
   member  = "serviceAccount:${google_service_account.composer.email}"
 }
+
+# Allow Composer SA to act as Dataproc SA when submitting Airflow Spark/Dataproc jobs
+resource "google_service_account_iam_member" "composer_actas_dataproc" {
+  service_account_id = google_service_account.dataproc.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${google_service_account.composer.email}"
+}
+

@@ -91,6 +91,9 @@ The environment provisions and integrates:
 - **Composer Service Account (`sa-composer`)**:
   - Roles granted:
     - `roles/composer.worker`: Required for Cloud Composer 3 environment workers and scheduler.
+    - `roles/dataproc.editor`: Allows Airflow tasks (e.g., `DataprocSubmitJobOperator`) to manage Dataproc clusters and submit Spark jobs.
+  - Cross-Service Permissions:
+    - `roles/iam.serviceAccountUser` on `sa-dataproc`: Allows Cloud Composer workers to submit jobs that execute under the Dataproc cluster service account identity.
 
 ### 3.3 Storage (`modules/storage`)
 - **Data Storage Bucket**: `google_storage_bucket` in `asia-southeast1` (e.g. `var.project_id-test-data`).
