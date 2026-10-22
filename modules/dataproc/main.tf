@@ -23,7 +23,7 @@ resource "google_dataproc_cluster" "cluster" {
     # Worker config is omitted intentionally for single-node cluster architecture
 
     software_config {
-      image_version = "2.2-debian12"
+      image_version = var.image_version
 
       override_properties = {
         "dataproc:dataproc.allow.zero.workers" = "true"

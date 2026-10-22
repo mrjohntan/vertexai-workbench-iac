@@ -52,3 +52,22 @@ variable "idle_timeout_seconds" {
   description = "Idle timeout in seconds before the workbench instance automatically shuts down (default 1800 = 30 minutes)."
   default     = 1800
 }
+
+variable "disable_public_ip" {
+  type        = bool
+  description = "Whether to disable public IP allocation on the workbench instance (default: true for private egress via Cloud NAT)."
+  default     = true
+}
+
+variable "dataproc_cluster_name" {
+  type        = string
+  description = "The target Dataproc cluster name to bind for Apache Spark Jupyter kernels."
+  default     = ""
+}
+
+variable "dataproc_region" {
+  type        = string
+  description = "The region of the target Dataproc cluster."
+  default     = ""
+}
+

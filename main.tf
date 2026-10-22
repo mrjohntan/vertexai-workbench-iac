@@ -65,6 +65,7 @@ module "dataproc" {
   temp_bucket_name    = module.storage.dataproc_temp_bucket_name
   master_machine_type = var.dataproc_master_machine_type
   idle_stop_ttl       = var.dataproc_idle_stop_ttl
+  image_version       = var.dataproc_image_version
 
   depends_on = [google_project_service.required_apis]
 }
@@ -88,14 +89,16 @@ module "composer" {
 module "workbench" {
   source = "./modules/workbench"
 
-  project_id           = var.project_id
-  zone                 = var.zone
-  network_id           = module.networking.network_id
-  subnet_id            = module.networking.subnet_id
-  workbench_sa_email   = module.iam.workbench_sa_email
-  workbench_user_email = var.workbench_user_email
-  machine_type         = var.workbench_machine_type
-  idle_timeout_seconds = var.workbench_idle_timeout_seconds
+  project_id            = var.project_id
+  zone                  = var.zone
+  network_id            = module.networking.network_id
+  subnet_id             = module.networking.subnet_id
+  workbench_sa_email    = module.iam.workbench_sa_email
+  workbench_user_email  = var.workbench_user_email
+  machine_type          = var.workbench_machine_type
+  idle_timeout_seconds  = var.workbench_idle_timeout_seconds
+  dataproc_cluster_name = module.dataproc.cluster_name
+  dataproc_region       = var.region
 
   depends_on = [google_project_service.required_apis]
 }

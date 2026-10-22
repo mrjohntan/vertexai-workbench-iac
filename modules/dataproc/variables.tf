@@ -46,3 +46,10 @@ variable "idle_stop_ttl" {
   description = "The duration to keep the Dataproc cluster running while idle before automatically stopping it (must end with 's', e.g. '1800s' for 30 minutes). Valid range: [600s, 1209600s]."
   default     = "1800s"
 }
+
+variable "image_version" {
+  type        = string
+  description = "The Dataproc image version supporting Spark 3 (default: 2.3-debian12, the latest Dataproc image with Spark 3.5.x)."
+  default     = "2.3-debian12"
+}
+
