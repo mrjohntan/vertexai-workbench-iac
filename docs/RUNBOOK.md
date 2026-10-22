@@ -61,18 +61,20 @@ This runbook guides engineers and maintainers through deploying, verifying, trou
    ```
 2. Verify object is written cleanly.
 
-### 2.3 Verifying Dataproc Remote Kernel Execution
+### 2.3 Verifying Dataproc Remote Kernel Execution (Apache Spark 3)
 1. In Workbench JupyterLab, create a new Notebook (`.ipynb`).
 2. Open the kernel switcher in the top right.
-3. Select **Dataproc Cluster** > `test-dataproc-kernel` (PySpark).
-4. Run the following cell:
+3. Select **Dataproc Cluster** > `test-dataproc-kernel` (PySpark / Apache Spark 3).
+4. Run the following cell to verify Apache Spark 3 runtime:
    ```python
    from pyspark.sql import SparkSession
    spark = SparkSession.builder.appName("WorkbenchTest").getOrCreate()
+   print(f"Spark Version: {spark.version}")
+   assert spark.version.startswith("3."), f"Expected Spark 3, got: {spark.version}"
    df = spark.range(1, 1001)
    print(f"Total count from remote Dataproc Spark: {df.count()}")
    ```
-5. Confirm output returns `Total count from remote Dataproc Spark: 1000`.
+5. Confirm output returns `Spark Version: 3.5.x` and `Total count from remote Dataproc Spark: 1000`.
 
 ### 2.4 Verifying Cloud Composer 3 Notebook Scheduling
 1. With your test notebook open in Workbench JupyterLab, click the **Schedule** or **Execute Notebook** button in the top toolbar.
@@ -94,8 +96,8 @@ This runbook guides engineers and maintainers through deploying, verifying, trou
 | Symptom | Probable Cause | Remediation Steps |
 |---|---|---|
 | Cannot open JupyterLab from Console | User not set in `instance_owners` or missing `roles/notebooks.admin` / `viewer` | Ensure `workbench_user_email` matches user Google Cloud identity. Check IAM bindings on project. |
-| `pip install` fails with network timeout inside Workbench | Cloud NAT not routing or route missing | Verify `google_compute_router_nat.nat` is healthy. Verify route `0.0.0.0/0` -> `default-internet-gateway` exists in VPC. |
-| Dataproc cluster kernel does not appear in Workbench | Component Gateway disabled or internal firewall blocking ports | Confirm `endpoint_config.enable_http_port_access = true`. Check firewall rule `allow-internal` covers `10.10.0.0/24`. |
+| `pip install` fails with network timeout inside Workbench | Cloud NAT not routing or route missing | Verify `google_compute_router_nat.nat` is healthy. Verify route `0.0.0.0/0` -> `default-internet-gateway` exists in VPC. Confirm instance has no external IP and routes through NAT gateway. |
+| Dataproc cluster kernel does not appear in Workbench | `disable-mixer` set to true or Component Gateway disabled | Confirm instance metadata has `disable-mixer = "false"`, `dataproc-cluster-name`, and `dataproc-region`. Confirm `endpoint_config.enable_http_port_access = true` on the cluster. Check firewall rule `allow-internal` covers `10.10.0.0/24`. |
 | Dataproc creation fails with missing permissions on temp_bucket | Custom VM service account lacks `storage.buckets.get` or dedicated `temp_bucket` omitted | Ensure `temp_bucket = var.temp_bucket_name` is configured in Dataproc cluster and `roles/storage.admin` is granted on both staging and temp buckets. |
 | Composer DAG upload returns `Permission Denied` from Workbench | Missing `roles/storage.objectUser` on Composer DAGs bucket | Verify `google_storage_bucket_iam_member.workbench_dag_access` exists in state. |
 

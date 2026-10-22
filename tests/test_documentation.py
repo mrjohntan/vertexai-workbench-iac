@@ -24,6 +24,8 @@ class TestDocumentation(unittest.TestCase):
         self.assertIn("Dataproc", content)
         self.assertIn("Composer", content)
         self.assertIn("Troubleshooting", content)
+        self.assertIn("Apache Spark 3", content)
+        self.assertIn("disable-mixer", content)
 
 if __name__ == "__main__":
     unittest.main()

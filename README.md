@@ -6,9 +6,10 @@ Automated Terraform codebase to bootstrap a secure, private-networked data scien
 
 - **Private Networking**: Custom VPC (`10.10.0.0/24`) with Private Google Access.
 - **Outbound NAT**: Cloud Router + Cloud NAT automatically enables private instances (Workbench VM, Dataproc nodes) to download libraries from PyPI, Conda, and Debian APT without public IPs.
-- **Vertex AI Workbench**: A private `google_workbench_instance` (no external IP), accessible via Google Cloud Console Web Proxy, attached to a dedicated least-privilege service account (`sa-workbench`).
+- **Vertex AI Workbench**: A private `google_workbench_instance` (strictly no external IP, `disable_public_ip = true`), with outbound package egress via Cloud NAT, accessible via Google Cloud Console Web Proxy, attached to a dedicated least-privilege service account (`sa-workbench`).
+- **Apache Spark Kernels**: Workbench metadata enables the Managed Service for Apache Spark JupyterLab kernels (`disable-mixer = "false"`) and pre-binds to the provisioned Dataproc cluster.
 - **User Impersonation & Cloud Storage Access**: Configured with IAM impersonation (`roles/iam.serviceAccountUser` & `roles/iam.serviceAccountTokenCreator`) for the assigned user, granting write/read access to a dedicated test data bucket.
-- **Dataproc Remote Kernel**: Single-node Dataproc cluster running in the private subnet with Component Gateway and Jupyter/Spark components enabled to serve as the remote kernel for Workbench notebooks.
+- **Dataproc Remote Kernel (Spark 3 Support)**: Single-node Dataproc cluster running the latest Dataproc 2.3 image (`2.3-debian12`, supporting Apache Spark 3.5.x) in the private subnet with Component Gateway and Jupyter/Spark components enabled to serve as the remote kernel for Workbench notebooks.
 - **Cloud Composer 3 Scheduling**: A lightweight (Small) Cloud Composer 3 environment with cross-service IAM permissions allowing Workbench users to publish and schedule notebook DAGs directly into Apache Airflow.
 
 ---
