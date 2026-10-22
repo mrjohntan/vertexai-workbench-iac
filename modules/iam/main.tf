@@ -53,6 +53,13 @@ resource "google_project_iam_member" "dataproc_worker" {
   member  = "serviceAccount:${google_service_account.dataproc.email}"
 }
 
+# Allow Workbench SA to act as Dataproc SA for remote Spark kernels/jobs
+resource "google_service_account_iam_member" "workbench_actas_dataproc" {
+  service_account_id = google_service_account.dataproc.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${google_service_account.workbench.email}"
+}
+
 # 3. Cloud Composer 3 Service Account
 resource "google_service_account" "composer" {
   account_id   = "sa-composer"

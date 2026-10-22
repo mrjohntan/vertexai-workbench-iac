@@ -29,9 +29,10 @@ class TestIAMModule(unittest.TestCase):
         self.assertIn("roles/dataproc.worker", content)
         self.assertIn("roles/composer.worker", content)
 
-        # Impersonation
+        # Impersonation & SA User
         self.assertIn("roles/iam.serviceAccountUser", content)
         self.assertIn("roles/iam.serviceAccountTokenCreator", content)
+        self.assertIn("workbench_actas_dataproc", content)
 
     def test_iam_outputs(self):
         path = os.path.join(self.mod_dir, "outputs.tf")
