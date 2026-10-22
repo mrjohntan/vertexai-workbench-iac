@@ -15,7 +15,7 @@ output "workbench_sa_email" {
 
 output "dataproc_cluster_name" {
   value       = module.dataproc.cluster_name
-  description = "The name of the single-node Dataproc cluster."
+  description = "The name of the Dataproc cluster."
 }
 
 output "composer_env_name" {

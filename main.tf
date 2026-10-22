@@ -53,19 +53,21 @@ module "storage" {
   depends_on = [google_project_service.required_apis]
 }
 
-# 4. Dataproc Module (Single-Node Cluster, Component Gateway, Jupyter)
+# 4. Dataproc Module (Standard Cluster, Component Gateway, Jupyter)
 module "dataproc" {
   source = "./modules/dataproc"
 
-  project_id          = var.project_id
-  region              = var.region
-  subnet_id           = module.networking.subnet_id
-  dataproc_sa_email   = module.iam.dataproc_sa_email
-  staging_bucket_name = module.storage.dataproc_staging_bucket_name
-  temp_bucket_name    = module.storage.dataproc_temp_bucket_name
-  master_machine_type = var.dataproc_master_machine_type
-  idle_stop_ttl       = var.dataproc_idle_stop_ttl
-  image_version       = var.dataproc_image_version
+  project_id           = var.project_id
+  region               = var.region
+  subnet_id            = module.networking.subnet_id
+  dataproc_sa_email    = module.iam.dataproc_sa_email
+  staging_bucket_name  = module.storage.dataproc_staging_bucket_name
+  temp_bucket_name     = module.storage.dataproc_temp_bucket_name
+  master_machine_type  = var.dataproc_master_machine_type
+  worker_machine_type  = var.dataproc_worker_machine_type
+  worker_num_instances = var.dataproc_worker_num_instances
+  idle_stop_ttl        = var.dataproc_idle_stop_ttl
+  image_version        = var.dataproc_image_version
 
   depends_on = [google_project_service.required_apis]
 }

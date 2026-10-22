@@ -40,8 +40,20 @@ variable "workbench_machine_type" {
 
 variable "dataproc_master_machine_type" {
   type        = string
-  description = "The machine type for the single-node Dataproc master instance."
-  default     = "n2-standard-4"
+  description = "The machine type for the Dataproc master instance."
+  default     = "e2-standard-2"
+}
+
+variable "dataproc_worker_machine_type" {
+  type        = string
+  description = "The machine type for the Dataproc worker instances."
+  default     = "e2-standard-2"
+}
+
+variable "dataproc_worker_num_instances" {
+  type        = number
+  description = "The number of worker instances in the Dataproc cluster."
+  default     = 2
 }
 
 variable "dataproc_idle_stop_ttl" {

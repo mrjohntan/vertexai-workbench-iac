@@ -129,11 +129,11 @@ The environment provisions and integrates:
 - **Storage Configuration**:
   - `cluster_config.staging_bucket`: Set to dedicated staging bucket `var.staging_bucket_name`.
   - `cluster_config.temp_bucket`: Set to dedicated temp bucket `var.temp_bucket_name`.
-- **Sizing & Single-Node Topology**:
-  - `cluster_config.master_config`: 1 master instance (`n2-standard-4` or `e2-standard-4`).
-  - `cluster_config.worker_config`: Omitted entirely (Google Cloud API requirement for single-node Dataproc).
-  - Software config property in `cluster_config.software_config.override_properties`:
-    - `"dataproc:dataproc.allow.zero.workers" = "true"`.
+- **Sizing & Standard Cluster Topology**:
+  - `cluster_config.master_config`: 1 master instance (`e2-standard-2`, configurable).
+  - `cluster_config.worker_config`: 2 worker instances (`e2-standard-2`, configurable).
+  - Boot disk: `pd-standard` 50 GB for both master and worker nodes.
+  - Architecture: Standard multi-node cluster topology.
 - **Network Configuration**:
   - Attached to the private subnet via `cluster_config.gce_cluster_config.subnetwork`.
   - `cluster_config.gce_cluster_config.internal_ip_only = true`.

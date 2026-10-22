@@ -19,7 +19,7 @@ class TestRootConfig(unittest.TestCase):
         self.assertTrue(os.path.exists(path), "variables.tf must exist")
         with open(path) as f:
             content = f.read()
-        for var in ["project_id", "region", "zone", "network_name", "subnet_cidr", "workbench_user_email", "dataproc_image_version"]:
+        for var in ["project_id", "region", "zone", "network_name", "subnet_cidr", "workbench_user_email", "dataproc_image_version", "dataproc_worker_machine_type", "dataproc_worker_num_instances"]:
             self.assertIn(f'variable "{var}"', content)
 
     def test_main_tf_enables_required_services(self):

@@ -9,7 +9,7 @@ Automated Terraform codebase to bootstrap a secure, private-networked data scien
 - **Vertex AI Workbench**: A private `google_workbench_instance` (strictly no external IP, `disable_public_ip = true`), with outbound package egress via Cloud NAT, accessible via Google Cloud Console Web Proxy, attached to a dedicated least-privilege service account (`sa-workbench`).
 - **Apache Spark Kernels**: Workbench metadata enables the Managed Service for Apache Spark JupyterLab kernels (`disable-mixer = "false"`) and pre-binds to the provisioned Dataproc cluster.
 - **User Impersonation & Cloud Storage Access**: Configured with IAM impersonation (`roles/iam.serviceAccountUser` & `roles/iam.serviceAccountTokenCreator`) for the assigned user, granting write/read access to a dedicated test data bucket.
-- **Dataproc Remote Kernel (Spark 3 Support)**: Single-node Dataproc cluster running the latest Dataproc 2.3 image (`2.3-debian12`, supporting Apache Spark 3.5.x) in the private subnet with Component Gateway and Jupyter/Spark components enabled to serve as the remote kernel for Workbench notebooks.
+- **Dataproc Remote Kernel (Spark 3 Support)**: Standard Dataproc cluster (1 master, 2 workers, `e2-standard-2`) running the latest Dataproc 2.3 image (`2.3-debian12`, supporting Apache Spark 3.5.x) in the private subnet with Component Gateway and Jupyter/Spark components enabled to serve as the remote kernel for Workbench notebooks.
 - **Cloud Composer 3 Scheduling**: A lightweight (Small) Cloud Composer 3 environment with cross-service IAM permissions allowing Workbench users to publish and schedule notebook DAGs directly into Apache Airflow.
 
 ---
@@ -26,7 +26,7 @@ Automated Terraform codebase to bootstrap a secure, private-networked data scien
 │   ├── networking/            # VPC, private subnet, Cloud Router, Cloud NAT, firewall rules
 │   ├── iam/                   # Service accounts, role grants, user impersonation bindings
 │   ├── storage/               # Test data bucket, Dataproc staging & temp buckets
-│   ├── dataproc/              # Single-node Dataproc cluster with Component Gateway
+│   ├── dataproc/              # Standard Dataproc cluster with Component Gateway
 │   ├── composer/              # Cloud Composer 3 environment & DAG bucket permissions
 │   └── workbench/             # Private Vertex AI Workbench instance & instance owner
 └── docs/
