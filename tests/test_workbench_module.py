@@ -19,13 +19,24 @@ class TestWorkbenchModule(unittest.TestCase):
 
         self.assertIn("google_workbench_instance", content)
         self.assertIn("gce_setup", content)
-        self.assertIn("disable_public_ip = true", content)
         self.assertIn("network_interfaces", content)
         self.assertIn("service_accounts", content)
         self.assertIn("vm_image", content)
-        self.assertIn("workbench-instances", content)
         self.assertIn("instance_owners", content)
         self.assertIn("idle-timeout-seconds", content)
+        self.assertIn('"disable-mixer"', content)
+        self.assertIn('"dataproc-cluster-name"', content)
+        self.assertIn('"dataproc-region"', content)
+        self.assertIn("disable_public_ip = var.disable_public_ip", content)
+
+    def test_workbench_variables(self):
+        path = os.path.join(self.mod_dir, "variables.tf")
+        with open(path) as f:
+            content = f.read()
+        self.assertIn('variable "disable_public_ip"', content)
+        self.assertIn('default     = true', content)
+        self.assertIn('variable "dataproc_cluster_name"', content)
+        self.assertIn('variable "dataproc_region"', content)
 
     def test_workbench_outputs(self):
         path = os.path.join(self.mod_dir, "outputs.tf")

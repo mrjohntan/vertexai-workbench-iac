@@ -11,7 +11,7 @@ resource "google_workbench_instance" "instance" {
 
   gce_setup {
     machine_type      = var.machine_type
-    disable_public_ip = true
+    disable_public_ip = var.disable_public_ip
 
     network_interfaces {
       network  = var.network_id
@@ -33,10 +33,19 @@ resource "google_workbench_instance" "instance" {
       disk_type    = "PD_BALANCED"
     }
 
-    metadata = {
-      idle-timeout-seconds    = tostring(var.idle_timeout_seconds)
-      enable-guest-attributes = "TRUE"
-    }
+    metadata = merge(
+      {
+        idle-timeout-seconds    = tostring(var.idle_timeout_seconds)
+        enable-guest-attributes = "TRUE"
+        "disable-mixer"         = "false"
+      },
+      var.dataproc_cluster_name != "" ? {
+        "dataproc-cluster-name" = var.dataproc_cluster_name
+      } : {},
+      var.dataproc_region != "" ? {
+        "dataproc-region" = var.dataproc_region
+      } : {}
+    )
 
     tags = ["vertex-workbench", "private-workload"]
   }
