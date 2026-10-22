@@ -32,7 +32,19 @@ variable "temp_bucket_name" {
 variable "master_machine_type" {
   type        = string
   description = "The Compute Engine machine type for the Dataproc master node."
-  default     = "n2-standard-4"
+  default     = "e2-standard-2"
+}
+
+variable "worker_machine_type" {
+  type        = string
+  description = "The Compute Engine machine type for the Dataproc worker nodes."
+  default     = "e2-standard-2"
+}
+
+variable "worker_num_instances" {
+  type        = number
+  description = "The number of worker nodes in the Dataproc cluster."
+  default     = 2
 }
 
 variable "cluster_name" {

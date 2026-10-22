@@ -20,15 +20,17 @@ resource "google_dataproc_cluster" "cluster" {
       }
     }
 
-    # Worker config is omitted intentionally for single-node cluster architecture
+    worker_config {
+      num_instances = var.worker_num_instances
+      machine_type  = var.worker_machine_type
+      disk_config {
+        boot_disk_type    = "pd-standard"
+        boot_disk_size_gb = 50
+      }
+    }
 
     software_config {
-      image_version = var.image_version
-
-      override_properties = {
-        "dataproc:dataproc.allow.zero.workers" = "true"
-      }
-
+      image_version       = var.image_version
       optional_components = ["JUPYTER"]
     }
 
